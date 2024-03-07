@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\dotnet\\bm_ne\\bm_new\\bm_new.csproj": {}
+    "D:\\dotnet\\bm_ne2\\bm_new.csproj": {}
   },
   "projects": {
-    "D:\\dotnet\\bm_ne\\bm_new\\bm_new.csproj": {
+    "D:\\dotnet\\bm_ne2\\bm_new.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\dotnet\\bm_ne\\bm_new\\bm_new.csproj",
+        "projectUniqueName": "D:\\dotnet\\bm_ne2\\bm_new.csproj",
         "projectName": "bm_new",
-        "projectPath": "D:\\dotnet\\bm_ne\\bm_new\\bm_new.csproj",
+        "projectPath": "D:\\dotnet\\bm_ne2\\bm_new.csproj",
         "packagesPath": "C:\\Users\\Rana Saud\\.nuget\\packages\\",
-        "outputPath": "D:\\dotnet\\bm_ne\\bm_new\\obj\\",
+        "outputPath": "D:\\dotnet\\bm_ne2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
