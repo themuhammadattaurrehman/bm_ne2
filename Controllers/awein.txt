@@ -1,0 +1,72 @@
+  [HttpPost("insert")]
+public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
+{
+    using var transaction = _db.Database.BeginTransaction();
+    try
+    {
+        User user = new User
+        {
+            UserType = doctorRequest.UserType,
+            FirstName = doctorRequest.FirstName,
+            LastName = doctorRequest.LastName,
+            FatherHusbandName = doctorRequest.FatherHusbandName,
+            Gender = doctorRequest.Gender,
+            Cnic = doctorRequest.Cnic,
+            Contact = doctorRequest.Contact,
+            EmergencyContact = doctorRequest.EmergencyContact,
+            Email = doctorRequest.Email,
+            Address = doctorRequest.Address,
+            JoiningDate = doctorRequest.JoiningDate,
+            FloorNo = doctorRequest.FloorNo,
+            Experience = doctorRequest.Experience,
+            DateOfBirth = doctorRequest.DateOfBirth,
+            MaritalStatus = doctorRequest.MaritalStatus,
+            Religion = doctorRequest.Religion
+        };
+        _db.Users.Add(user);
+
+        if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Count > 0)
+        {
+            foreach (QualificationRequest qualificationRequest in doctorRequest.QualificationList)
+            {
+                Qualification qualification = new Qualification
+                {
+                    UserId = user.Id,
+                    Certificate = qualificationRequest.Certificate,
+                    Description = qualificationRequest.Description,
+                    QualificationType = qualificationRequest.QualificationType
+                };
+                _db.Qualifications.Add(qualification);
+            }
+        }
+
+        Doctor doctor = new Doctor
+        {
+            UserId = user.Id,
+            ConsultationFee = doctorRequest.ConsultationFee,
+            EmergencyConsultationFee = doctorRequest.EmergencyConsultationFee,
+            ShareInFee = doctorRequest.ShareInFee,
+            SpecialityType = doctorRequest.SpecialityType
+        };
+        _db.Doctors.Add(doctor);
+
+        // Save changes once after all entities have been added
+        await _db.SaveChangesAsync();
+
+        transaction.Commit();
+        return new Response<Doctor>(true, "Success: Inserted data.", doctor);
+    }
+    catch (DbUpdateException ex)
+    {
+        // Log the exception details for debugging
+        // Log.Error(ex, "Database error while inserting data.");
+
+        transaction.Rollback();
+        return new Response<Doctor>(false, $"Database Failure: Unable to insert data. Because {ex.InnerException?.Message ?? ex.Message}", null);
+    }
+    catch (Exception ex)
+    {
+        transaction.Rollback();
+        return new Response<Doctor>(false, $"Server Failure: Unable to insert data. Because {ex.Message}", null);
+    }
+}

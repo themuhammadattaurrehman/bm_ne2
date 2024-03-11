@@ -1,7 +1,7 @@
 ﻿using dotnet.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Text.Json;
 namespace dotnet.Controllers
 {
     [Route("api/[controller]")]
@@ -105,6 +105,7 @@ namespace dotnet.Controllers
         [HttpPost("insert")]
         public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
         {
+            
             using var transaction = _db.Database.BeginTransaction();
             try
             {
