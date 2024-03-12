@@ -21,7 +21,7 @@ namespace dotnet.Controllers
         {
             try
             {
-                List<Doctor> doctorList = await _db.Doctors.Include(x => x.User).Include(x => x.User.Qualifications).ToListAsync();
+                List<Doctor> doctorList = await _db.Doctors.Include(x => x.User).ToListAsync();
                 if (doctorList != null)
                 {
                     if (doctorList.Count > 0)
@@ -102,70 +102,84 @@ namespace dotnet.Controllers
             }
         }
 
-        [HttpPost("insert")]
-        public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
+    [HttpPost("insert")]
+public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
+{
+    using var transaction = _db.Database.BeginTransaction();
+    
+    try
+    {
+        // Create a new user
+        User user = new User
         {
-            
-            using var transaction = _db.Database.BeginTransaction();
-            try
-            {
-                User user = new User();
-                user.UserType = doctorRequest.UserType;
-                user.FirstName = doctorRequest.FirstName;
-                user.LastName = doctorRequest.LastName;
-                user.FatherHusbandName = doctorRequest.FatherHusbandName;
-                user.Gender = doctorRequest.Gender;
-                user.Cnic = doctorRequest.Cnic;
-                user.Contact = doctorRequest.Contact;
-                user.EmergencyContact = doctorRequest.EmergencyContact;
-                user.Email = doctorRequest.Email;
-                user.Address = doctorRequest.Address;
-                user.JoiningDate = doctorRequest.JoiningDate;
-                user.FloorNo = doctorRequest.FloorNo;
-                user.Experience = doctorRequest.Experience;
-                user.DateOfBirth = doctorRequest.DateOfBirth;
-                user.MaritalStatus = doctorRequest.MaritalStatus;
-                user.Religion = doctorRequest.Religion;
-                await _db.Users.AddAsync(user);
-                await _db.SaveChangesAsync();
+            UserType = doctorRequest.UserType,
+            FirstName = doctorRequest.FirstName,
+            LastName = doctorRequest.LastName,
+            FatherHusbandName = doctorRequest.FatherHusbandName,
+            Gender = doctorRequest.Gender,
+            Cnic = doctorRequest.Cnic,
+            Contact = doctorRequest.Contact,
+            EmergencyContact = doctorRequest.EmergencyContact,
+            Email = doctorRequest.Email,
+            Address = doctorRequest.Address,
+            JoiningDate = doctorRequest.JoiningDate,
+            FloorNo = doctorRequest.FloorNo,
+            Experience = doctorRequest.Experience,
+            DateOfBirth = doctorRequest.DateOfBirth,
+            MaritalStatus = doctorRequest.MaritalStatus,
+            Religion = doctorRequest.Religion
+        };
 
-                if (doctorRequest.QualificationList != null)
+        // Add user to the database
+        await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync();
+
+        // Add qualifications if provided
+        if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Any())
+        {
+            foreach (var qualificationRequest in doctorRequest.QualificationList)
+            {
+                Qualification qualification = new Qualification
                 {
-                    if (doctorRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in doctorRequest.QualificationList)
-                        {
-                            Qualification qualification = new Qualification();
-                            qualification.UserId = user.Id;
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.Qualifications.AddAsync(qualification);
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+                    UserId = user.Id,
+                    Certificate = qualificationRequest.Certificate,
+                    Description = qualificationRequest.Description,
+                    QualificationType = qualificationRequest.QualificationType
+                };
 
-                Doctor doctor = new Doctor();
-                doctor.UserId = user.Id;
-                doctor.ConsultationFee = doctorRequest.ConsultationFee;
-                doctor.EmergencyConsultationFee = doctorRequest.EmergencyConsultationFee;
-                doctor.ShareInFee = doctorRequest.ShareInFee;
-                doctor.SpecialityType = doctorRequest.SpecialityType;
-                await _db.Doctors.AddAsync(doctor);
-                await _db.SaveChangesAsync();
+                await _db.Qualifications.AddAsync(qualification);
+            }
 
-                transaction.Commit();
-                return new Response<Doctor>(true, "Success: Inserted data.", doctor);
-            }
-            catch (Exception exception)
-            {
-                transaction.Rollback();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                return new Response<Doctor>(false, $"Server Failure: Unable to insert data. Because {exception.Message}", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            }
+            await _db.SaveChangesAsync();
         }
+
+        // Create a new doctor
+        Doctor doctor = new Doctor
+        {
+            UserId = user.Id,
+            ConsultationFee = doctorRequest.ConsultationFee,
+            EmergencyConsultationFee = doctorRequest.EmergencyConsultationFee,
+            ShareInFee = doctorRequest.ShareInFee,
+            SpecialityType = doctorRequest.SpecialityType
+        };
+
+        // Add doctor to the database
+        await _db.Doctors.AddAsync(doctor);
+        await _db.SaveChangesAsync();
+
+        // Commit transaction if everything is successful
+        transaction.Commit();
+
+        return new Response<Doctor>(true, "Success: Inserted data.", doctor);
+    }
+    catch (Exception exception)
+    {
+        // Rollback transaction if an exception occurs
+        transaction.Rollback();
+        return new Response<Doctor>(false, $"Server Failure: Unable to insert data. Because {exception.Message}", null);
+    }
+}
+
 
         [HttpPut("update/{id}")]
         public async Task<Response<Doctor>> UpdateItem(int id, DoctorRequest doctorRequest)
