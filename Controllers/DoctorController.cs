@@ -1,6 +1,7 @@
 ﻿using dotnet.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using System.Text.Json;
 namespace dotnet.Controllers
 {
@@ -48,7 +49,7 @@ namespace dotnet.Controllers
             try
             {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                Doctor doctor = await _db.Doctors.Include(x => x.User).Include(x => x.User.Qualifications).FirstOrDefaultAsync(x => x.Id == id);
+                Doctor doctor = await _db.Doctors.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 if (doctor == null)
                 {
@@ -133,8 +134,7 @@ public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
         // Add user to the database
         await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
-
-        // Add qualifications if provided
+  // Add qualifications if provided
         if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Any())
         {
             foreach (var qualificationRequest in doctorRequest.QualificationList)

@@ -32,26 +32,27 @@ namespace dotnet.Controllers
         public async Task<Response<List<Appointment>>> GetItems()
         {
             try
+        {
+            List<Appointment> appointmentList = await _db.Appointments
+                .Include(x => x.Patient)
+                .Include(x => x.Patient.User)
+                .Take(30)
+                .OrderBy(x => x.Id)
+                .ToListAsync();
+
+            if (appointmentList != null && appointmentList.Count > 0)
             {
-                List<Appointment> appointmentList = await _db.Appointments.Include(x => x.Patient).
-                Include(x => x.Patient.User).Take(30).OrderBy(x => x.Id).ToListAsync();
-                if (appointmentList != null)
-                {
-                    if (appointmentList.Count > 0)
-                    {
-                        return new Response<List<Appointment>>(true, "Success: Acquired data.", appointmentList);
-                    }
-                }
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                return new Response<List<Appointment>>(true, "Success: Acquired data.", appointmentList);
+            }
+            else
+            {
                 return new Response<List<Appointment>>(false, "Failure: Database is empty.", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
-            catch (Exception exception)
-            {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                return new Response<List<Appointment>>(false, $"Server Failure: Unable to get data. Because {exception.Message}", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            }
+        }
+        catch (Exception exception)
+        {
+            return new Response<List<Appointment>>(false, $"Server Failure: Unable to get data. Because {exception.Message}", null);
+        }
         }
 
         [HttpGet("get/id/{id}")]

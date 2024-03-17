@@ -70,3 +70,62 @@ public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
         return new Response<Doctor>(false, $"Server Failure: Unable to insert data. Because {ex.Message}", null);
     }
 }
+
+
+
+
+
+   // Add qualifications if provided
+        // if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Any())
+        // {
+        //     foreach (var qualificationRequest in doctorRequest.QualificationList)
+        //     {
+        //         Qualification qualification = new Qualification
+        //         {
+        //             UserId = user.Id,
+        //             Certificate = qualificationRequest.Certificate,
+        //             Description = qualificationRequest.Description,
+        //             QualificationType = qualificationRequest.QualificationType
+        //         };
+
+        //         await _db.Qualifications.AddAsync(qualification);
+        //     }
+
+        //     await _db.SaveChangesAsync();
+        // }
+
+
+// for insert data
+{
+    "UserType": "Doctor",
+    "FirstName": "atta",
+    "LastName": "atl",
+    "FatherHusbandName": "Michael Doe",
+    "Gender": "Male",
+    "Cnic": "1234567890123",
+    "Contact": "1234567890",
+    "EmergencyContact": "0987654321",
+    "Email": "john.doe@example.com",
+    "Address": "123 Main Street, City",
+    "JoiningDate": "2024-03-13",
+    "FloorNo": "3",
+    "Experience": "5 years",
+    "DateOfBirth": "1990-01-01",
+    "MaritalStatus": "Single",
+    "Religion": "Christian",
+    "ConsultationFee": 50,
+    "EmergencyConsultationFee": 100,
+    "ShareInFee": 20,
+    "SpecialityType": "Cardiology",
+    "QualificationList": [
+        {
+            "Certificate": "MBBS",
+            "Description": "Bachelor of Medicine, Bachelor of Surgery",
+            "QualificationType": "Medical"
+        }
+    ]
+}
+
+
+
+.Include(x => x.User.Qualifications)
