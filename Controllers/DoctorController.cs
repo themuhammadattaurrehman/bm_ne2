@@ -135,23 +135,23 @@ public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
         await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
   // Add qualifications if provided
-        if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Any())
-        {
-            foreach (var qualificationRequest in doctorRequest.QualificationList)
-            {
-                Qualification qualification = new Qualification
-                {
-                    UserId = user.Id,
-                    Certificate = qualificationRequest.Certificate,
-                    Description = qualificationRequest.Description,
-                    QualificationType = qualificationRequest.QualificationType
-                };
+        // if (doctorRequest.QualificationList != null && doctorRequest.QualificationList.Any())
+        // {
+        //     foreach (var qualificationRequest in doctorRequest.QualificationList)
+        //     {
+        //         Qualification qualification = new Qualification
+        //         {
+        //             UserId = user.Id,
+        //             Certificate = qualificationRequest.Certificate,
+        //             Description = qualificationRequest.Description,
+        //             QualificationType = qualificationRequest.QualificationType
+        //         };
 
-                await _db.Qualifications.AddAsync(qualification);
-            }
+        //         await _db.Qualifications.AddAsync(qualification);
+        //     }
 
-            await _db.SaveChangesAsync();
-        }
+        //     await _db.SaveChangesAsync();
+        // }
 
         // Create a new doctor
         Doctor doctor = new Doctor
@@ -211,29 +211,29 @@ public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
                 doctor.SpecialityType = doctorRequest.SpecialityType;
                 await _db.SaveChangesAsync();
 
-                if (doctorRequest.QualificationList != null)
-                {
-                    if (doctorRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in doctorRequest.QualificationList)
-                        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                            Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == doctor.UserId);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                            if (qualification == null)
-                            {
-                                transaction.Rollback();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                                return new Response<Doctor>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                            }
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+//                 if (doctorRequest.QualificationList != null)
+//                 {
+//                     if (doctorRequest.QualificationList.Count > 0)
+//                     {
+//                         foreach (QualificationRequest drQualification in doctorRequest.QualificationList)
+//                         {
+// #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == doctor.UserId);
+// #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             if (qualification == null)
+//                             {
+//                                 transaction.Rollback();
+// #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+//                                 return new Response<Doctor>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
+// #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+//                             }
+//                             qualification.Certificate = drQualification.Certificate;
+//                             qualification.Description = drQualification.Description;
+//                             qualification.QualificationType = drQualification.QualificationType;
+//                             await _db.SaveChangesAsync();
+//                         }
+//                     }
+//                 }
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 User user = await _db.Users.FirstOrDefaultAsync(x => x.Id == doctor.UserId);
