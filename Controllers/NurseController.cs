@@ -127,22 +127,22 @@ namespace dotnet.Controllers
                 await _db.Users.AddAsync(user);
                 await _db.SaveChangesAsync();
 
-                if (nurseRequest.QualificationList != null)
-                {
-                    if (nurseRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in nurseRequest.QualificationList)
-                        {
-                            Qualification qualification = new Qualification();
-                            qualification.UserId = user.Id;
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.Qualifications.AddAsync(qualification);
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+                // if (nurseRequest.QualificationList != null)
+                // {
+                //     if (nurseRequest.QualificationList.Count > 0)
+                //     {
+                //         foreach (QualificationRequest drQualification in nurseRequest.QualificationList)
+                //         {
+                //             Qualification qualification = new Qualification();
+                //             qualification.UserId = user.Id;
+                //             qualification.Certificate = drQualification.Certificate;
+                //             qualification.Description = drQualification.Description;
+                //             qualification.QualificationType = drQualification.QualificationType;
+                //             await _db.Qualifications.AddAsync(qualification);
+                //             await _db.SaveChangesAsync();
+                //         }
+                //     }
+                // }
 
                 Nurse nurse = new Nurse();
                 nurse.UserId = user.Id;
@@ -193,29 +193,29 @@ namespace dotnet.Controllers
                 nurse.Salary = nurseRequest.Salary;
                 await _db.SaveChangesAsync();
 
-                if (nurseRequest.QualificationList != null)
-                {
-                    if (nurseRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in nurseRequest.QualificationList)
-                        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                            Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == nurse.UserId);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                            if (qualification == null)
-                            {
-                                transaction.Rollback();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                                return new Response<Nurse>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                            }
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+//                 if (nurseRequest.QualificationList != null)
+//                 {
+//                     if (nurseRequest.QualificationList.Count > 0)
+//                     {
+//                         foreach (QualificationRequest drQualification in nurseRequest.QualificationList)
+//                         {
+// #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == nurse.UserId);
+// #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             if (qualification == null)
+//                             {
+//                                 transaction.Rollback();
+// #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+//                                 return new Response<Nurse>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
+// #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+//                             }
+//                             qualification.Certificate = drQualification.Certificate;
+//                             qualification.Description = drQualification.Description;
+//                             qualification.QualificationType = drQualification.QualificationType;
+//                             await _db.SaveChangesAsync();
+//                         }
+//                     }
+//                 }
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 User user = await _db.Users.FirstOrDefaultAsync(x => x.Id == nurse.UserId);

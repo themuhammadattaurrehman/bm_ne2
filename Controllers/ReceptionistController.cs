@@ -21,7 +21,7 @@ namespace dotnet.Controllers
         {
             try
             {
-                List<Receptionist> receptionistList = await _db.Receptionists.Include(x => x.User).Include(x => x.User.Qualifications).ToListAsync();
+                List<Receptionist> receptionistList = await _db.Receptionists.Include(x => x.User).ToListAsync();
                 if (receptionistList != null)
                 {
                     if (receptionistList.Count > 0)
@@ -47,7 +47,7 @@ namespace dotnet.Controllers
             try
             {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                Receptionist receptionist = await _db.Receptionists.Include(x => x.User).Include(x => x.User.Qualifications).FirstOrDefaultAsync(x => x.Id == id);
+                Receptionist receptionist = await _db.Receptionists.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 if (receptionist != null)
                 {
@@ -127,22 +127,22 @@ namespace dotnet.Controllers
                 await _db.Users.AddAsync(user);
                 await _db.SaveChangesAsync();
 
-                if (receptionistRequest.QualificationList != null)
-                {
-                    if (receptionistRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in receptionistRequest.QualificationList)
-                        {
-                            Qualification qualification = new Qualification();
-                            qualification.UserId = user.Id;
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.Qualifications.AddAsync(qualification);
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+                // if (receptionistRequest.QualificationList != null)
+                // {
+                //     if (receptionistRequest.QualificationList.Count > 0)
+                //     {
+                //         foreach (QualificationRequest drQualification in receptionistRequest.QualificationList)
+                //         {
+                //             Qualification qualification = new Qualification();
+                //             qualification.UserId = user.Id;
+                //             qualification.Certificate = drQualification.Certificate;
+                //             qualification.Description = drQualification.Description;
+                //             qualification.QualificationType = drQualification.QualificationType;
+                //             await _db.Qualifications.AddAsync(qualification);
+                //             await _db.SaveChangesAsync();
+                //         }
+                //     }
+                // }
 
                 Receptionist receptionist = new Receptionist();
                 receptionist.UserId = user.Id;
@@ -191,29 +191,29 @@ namespace dotnet.Controllers
                 receptionist.ShiftTime = receptionistRequest.ShiftTime;
                 await _db.SaveChangesAsync();
 
-                if (receptionistRequest.QualificationList != null)
-                {
-                    if (receptionistRequest.QualificationList.Count > 0)
-                    {
-                        foreach (QualificationRequest drQualification in receptionistRequest.QualificationList)
-                        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                            Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == receptionist.UserId);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                            if (qualification == null)
-                            {
-                                transaction.Rollback();
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                                return new Response<Receptionist>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-                            }
-                            qualification.Certificate = drQualification.Certificate;
-                            qualification.Description = drQualification.Description;
-                            qualification.QualificationType = drQualification.QualificationType;
-                            await _db.SaveChangesAsync();
-                        }
-                    }
-                }
+//                 if (receptionistRequest.QualificationList != null)
+//                 {
+//                     if (receptionistRequest.QualificationList.Count > 0)
+//                     {
+//                         foreach (QualificationRequest drQualification in receptionistRequest.QualificationList)
+//                         {
+// #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             Qualification qualification = await _db.Qualifications.FirstOrDefaultAsync(x => x.Id == drQualification.Id && x.UserId == receptionist.UserId);
+// #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+//                             if (qualification == null)
+//                             {
+//                                 transaction.Rollback();
+// #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+//                                 return new Response<Receptionist>(false, $"Failure: Unable to update qualification {drQualification.Certificate}. Because Id is invalid. ", null);
+// #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+//                             }
+//                             qualification.Certificate = drQualification.Certificate;
+//                             qualification.Description = drQualification.Description;
+//                             qualification.QualificationType = drQualification.QualificationType;
+//                             await _db.SaveChangesAsync();
+//                         }
+//                     }
+//                 }
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 User user = await _db.Users.FirstOrDefaultAsync(x => x.Id == receptionist.UserId);

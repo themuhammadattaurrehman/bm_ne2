@@ -145,17 +145,17 @@ namespace dotnet.Controllers
                 await _db.Patients.AddAsync(patient);
                 await _db.SaveChangesAsync();
 
-                Appointment appointment = new Appointment();
-                appointment.PatientId = patient.Id;
-                appointment.DoctorId = patientRequest.DoctorId;
-                appointment.ReceptionistId = patientRequest.ReceptionistId;
-                appointment.Code = patientRequest.AppointmentCode;
-                appointment.Date = DateTime.UtcNow;
-                appointment.ConsultationDate = patientRequest.ConsultationDate;
-                appointment.Type = patientRequest.AppointmentType;
-                appointment.PatientCategory = patientRequest.Category;
-                await _db.Appointments.AddAsync(appointment);
-                await _db.SaveChangesAsync();
+                // Appointment appointment = new Appointment();
+                // appointment.PatientId = patient.Id;
+                // appointment.DoctorId = patientRequest.DoctorId;
+                // appointment.ReceptionistId = patientRequest.ReceptionistId;
+                // appointment.Code = patientRequest.AppointmentCode;
+                // appointment.Date = DateTime.UtcNow;
+                // appointment.ConsultationDate = patientRequest.ConsultationDate;
+                // appointment.Type = patientRequest.AppointmentType;
+                // appointment.PatientCategory = patientRequest.Category;
+                // await _db.Appointments.AddAsync(appointment);
+                // await _db.SaveChangesAsync();
 
                 transaction.Commit();
                 return new Response<Patient>(true, "Success: Created object.", patient);

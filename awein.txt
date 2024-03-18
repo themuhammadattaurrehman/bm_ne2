@@ -129,3 +129,77 @@ public async Task<Response<Doctor>> InsertItem(DoctorRequest doctorRequest)
 
 
 .Include(x => x.User.Qualifications)
+
+
+// data insert for nurse
+{
+    "UserType": "Nurse",
+    "FirstName": "Emma",
+    "LastName": "Smith",
+    "FatherHusbandName": "David Smith",
+    "Gender": "Female",
+    "Cnic": "9876543210987",
+    "Contact": "2345678901",
+    "EmergencyContact": "9876543210",
+    "Email": "emma.smith@example.com",
+    "Address": "456 Oak Street, Town",
+    "JoiningDate": "2023-08-20",
+    "FloorNo": "2",
+    "Experience": "3 years",
+    "DateOfBirth": "1995-05-15",
+    "MaritalStatus": "Married",
+    "Religion": "Islam",
+    "ConsultationFee": 0,
+    "EmergencyConsultationFee": 0,
+    "ShareInFee": 0,
+    "SpecialityType": "General Nursing",
+    "QualificationList": [
+        {
+            "Certificate": "RN",
+            "Description": "Registered Nurse",
+            "QualificationType": "Nursing"
+        },
+        {
+            "Certificate": "BSN",
+            "Description": "Bachelor of Science in Nursing",
+            "QualificationType": "Nursing"
+        }
+    ]
+}
+
+
+//data insert for Patient
+{
+  "doctorId": 123,
+  "receptionistId": 456,
+  "userType": "Patient",
+  "dateOfBirth": "1985-05-10T10:00:00.000Z",
+  "maritalStatus": "Married",
+  "religion": "Islam",
+  "firstName": "John",
+  "lastName": "Doe",
+  "fatherHusbandName": "Michael Doe",
+  "gender": "Male",
+  "cnic": "1234567890123",
+  "contact": "9876543210",
+  "emergencyContact": "1234567890",
+  "email": "john.doe@example.com",
+  "address": "456 Maple Street, City",
+  "joiningDate": "2024-03-18T10:00:00.000Z",
+  "floorNo": 1,
+  "experience": "Regular checkups",
+  "category": "General",
+  "birthPlace": "City",
+  "type": "New Patient",
+  "externalId": "P123456",
+  "bloodGroup": "O+",
+  "clinicSite": "Main Clinic",
+  "referredBy": "Dr. Smith",
+  "referredDate": "2024-03-10T10:00:00.000Z",
+  "guardian": "Jane Doe",
+  "paymentProfile": "Cash",
+  "description": "Routine checkup appointment",
+  "appointmentCode": "A123456",
+  "consultationDate": "2024-03-18T14:00:00.000Z",
+  "appointmentType": "Follow-up"
+}
